@@ -1,14 +1,18 @@
-# 歴史総合 授業サイト
+# 社会科 授業サイト（歴史総合・世界史・地理総合）
 
-GitHub Pages で公開する、歴史総合の授業用サイトです。
+GitHub Pages で公開する、社会科の授業用サイトです。1つのサイトの中で3教科を切り替えて使います。
 
 ## 構成
 - `index.html` … サイト本体（章・講の構成、連絡事項、教材リンクのデータも中に含まれます）
-- `files/` … 生徒に配る Word / PowerPoint / PDF などの教材ファイル
+  - 歴史総合（`rekishi`）… データの `chapters`
+  - 世界史（`sekaishi`）… データの `sekai.chapters`
+  - 地理総合（`chiri`）… データの `geo.chapters`
+- `files/rekishi/`・`files/sekaishi/`・`files/chiri/` … 生徒に配る Word / PowerPoint / PDF などの教材ファイル（教科ごと）
+- 教科を指定して開くには URL の末尾に `#rekishi`・`#sekaishi`・`#chiri` を付けます
 
 ## 更新のしかた
 - 教材の追加・連絡事項の更新は、Claude（Claude Code）に依頼して行います。
-- ファイルを `files/` に置き、`index.html` 内のデータに登録すると、該当する講に「プリント」「スライド」ボタンが表示されます。
+- ファイルを `files/教科/` に置き、`index.html` 内のデータに登録すると、該当する講に「プリント」「スライド」ボタンが表示されます。
 
 ## 注意
 - 無料の GitHub Pages ではリポジトリが公開になるため、`files/` に置いたファイルは URL を知っていれば誰でも取得できます。
