@@ -9,6 +9,7 @@ GitHub Pages で公開する、社会科の授業用サイトです。1つのサ
   - 地理総合（`chiri`）… データの `geo.chapters`
 - `files/rekishi/`・`files/sekaishi/`・`files/chiri/` … 生徒に配る Word / PowerPoint / PDF などの教材ファイル（教科ごと）
 - 教科を指定して開くには URL の末尾に `#rekishi`・`#sekaishi`・`#chiri` を付けます
+- 世界史は現在非公開です。公開するときは `index.html` の `var SEKAI_PUBLIC=false;` を `true` に変えるだけで、切り替えボタン・`#sekaishi`・検索に表示されます
 
 ## 更新のしかた
 - 教材の追加・連絡事項の更新は、Claude（Claude Code）に依頼して行います。

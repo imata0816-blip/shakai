@@ -7,7 +7,7 @@
 <style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
-<title>歴史総合 授業アーカイブ</title>
+<title>社会 授業アーカイブ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Dela+Gothic+One&family=Shippori+Mincho+B1:wght@800&family=Shippori+Mincho:wght@500&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap">
@@ -105,7 +105,7 @@ button{cursor:pointer}
 .now .none{color:var(--on-accent);opacity:.85}
 .now .jump{font-size:13px;color:var(--on-accent)}
 
-.subj{display:grid;grid-template-columns:repeat(3,1fr);margin-top:22px;border:2px solid var(--ink);border-radius:12px;overflow:hidden;background:var(--surface)}
+.subj{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;margin-top:22px;border:2px solid var(--ink);border-radius:12px;overflow:hidden;background:var(--surface)}
 .subj button{border:0;background:transparent;padding:12px 8px;font-size:16px;font-weight:900;letter-spacing:.12em;color:var(--muted)}
 .subj button+button{border-left:2px solid var(--ink)}
 .subj button.on{background:var(--ink);color:var(--surface)}
@@ -2935,7 +2935,7 @@ mark{background:var(--mark);color:inherit;padding:0 2px;border-radius:3px}
 <script id="main">
 (function(){
 "use strict";
-var PAGE_TITLE='歴史総合 授業アーカイブ';
+var PAGE_TITLE='社会 授業アーカイブ';
 var FONT_HREF='https://fonts.googleapis.com/css2?family=Anton&family=Dela+Gothic+One&family=Shippori+Mincho+B1:wght@800&family=Shippori+Mincho:wght@500&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap';
 var DEFAULT_RESET=':root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}';
 var TYPES=[
@@ -2964,8 +2964,10 @@ function files(l,k){return (l.items&&l.items[k])||[]}
 function hiddenT(l,k){return !!(l.hidden&&l.hidden[k])}
 function visibleTypes(l){return TYPES.filter(function(t){return files(l,t.k).length&&!hiddenT(l,t.k)})}
 function isNewFile(f){return !!(f.d&&daysAgo(f.d)<=NEW_DAYS)}
-var SUBJS=[{k:'rekishi',n:'歴史総合',o:'地理'},{k:'sekaishi',n:'世界史',o:'歴史'},{k:'chiri',n:'地理総合',o:'歴史'}];
-var SUBJ_KEYS=['rekishi','sekaishi','chiri'];
+/* 世界史を公開するときは false を true に変えるだけ（切り替えボタン・#sekaishi・検索にまとめて反映） */
+var SEKAI_PUBLIC=false;
+var SUBJS=[{k:'rekishi',n:'歴史総合',o:'地理'},{k:'sekaishi',n:'世界史',o:'歴史'},{k:'chiri',n:'地理総合',o:'歴史'}].filter(function(x){return x.k!=='sekaishi'||SEKAI_PUBLIC});
+var SUBJ_KEYS=SUBJS.map(function(x){return x.k});
 var SUBJ='rekishi'; try{var sv=localStorage.getItem('rekishi-subj');if(SUBJ_KEYS.indexOf(sv)>=0)SUBJ=sv}catch(e){}
 function chaps(k){k=k||SUBJ;if(k==='chiri')return (state.geo&&state.geo.chapters)||[];if(k==='sekaishi')return (state.sekai&&state.sekai.chapters)||[];return state.chapters}
 function subjName(k){return k==='chiri'?'地理総合':k==='sekaishi'?'世界史':'歴史総合'}
@@ -2973,7 +2975,7 @@ function allLessons(k){var a=[];(k?[k]:SUBJ_KEYS).forEach(function(sk){chaps(sk)
 function linksOf(l){var out=[];if(l.links)l.links.forEach(function(id){out.push(id)});allLessons('chiri').forEach(function(x){if(x.l.id!==l.id&&(x.l.links||[]).indexOf(l.id)>=0)out.push(x.l.id)});return out.map(findLesson).filter(Boolean)}
 function setSubj(k){SUBJ=k;try{localStorage.setItem('rekishi-subj',k)}catch(e){}}
 function gotoLesson(id){var f=findLesson(id);if(!f)return;if(f.s!==SUBJ){setSubj(f.s);query='';render()}var el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'})}
-(function(){var h=decodeURIComponent((location.hash||'').slice(1));if(SUBJ_KEYS.indexOf(h)>=0){SUBJ=h;return}if(h){var ks=['chiri','sekaishi'];for(var j=0;j<ks.length;j++){var cs=chaps(ks[j]);for(var i=0;i<cs.length;i++){var c=cs[i];if(c.id===h||c.lessons.some(function(l){return l.id===h})){SUBJ=ks[j];return}}}}})();
+(function(){var h=decodeURIComponent((location.hash||'').slice(1));if(SUBJ_KEYS.indexOf(h)>=0){SUBJ=h;return}if(h){var ks=['chiri','sekaishi'].filter(function(k){return SUBJ_KEYS.indexOf(k)>=0});for(var j=0;j<ks.length;j++){var cs=chaps(ks[j]);for(var i=0;i<cs.length;i++){var c=cs[i];if(c.id===h||c.lessons.some(function(l){return l.id===h})){SUBJ=ks[j];return}}}}})();
 function findLesson(id){var a=allLessons();for(var i=0;i<a.length;i++)if(a[i].l.id===id){a[i].i=i;return a[i]}return null}
 function tgt(){return 'target="_blank" rel="noopener"'}
 function pinHash(pin){var s='rekishi-sogo:'+pin,h=2166136261;for(var r=0;r<3;r++)for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)>>>0}return ('0000000'+h.toString(16)).slice(-8)}
