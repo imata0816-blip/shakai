@@ -42,7 +42,7 @@
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.7}
 #app{max-width:980px;margin:0 auto;padding-inline:16px;padding-block:16px 100px}
-.chap,.cnav a,.hit,.dash{--c:var(--ink);--c-soft:var(--accent-soft);--c-line:var(--line);--c-ink:var(--surface)}
+.chap,.cnav a,.hit,.dash,.exam{--c:var(--ink);--c-soft:var(--accent-soft);--c-line:var(--line);--c-ink:var(--surface)}
 h1,h2,h3,p{margin:0}
 h1,h2,h3{text-wrap:balance}
 a{color:inherit}
@@ -88,6 +88,11 @@ button{cursor:pointer}
 .nitem .nb{grid-column:2;font-size:14px;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--ink)}
 .nitem .nb a{color:var(--accent)}
 .nitem.imp{background:color-mix(in srgb,var(--new) 8%,var(--surface));border-radius:8px;padding-inline:8px;margin-inline:-8px;border-top-color:transparent}
+/* 連絡事項の下の「テスト用教材」枠 */
+.exam{position:relative;z-index:1;margin:10px 0 4px;background:var(--surface);border:2px solid var(--ink);border-radius:var(--r);padding:14px 18px;display:grid;gap:8px}
+.exam h2{font-size:16px;font-weight:900}
+.exam .eitem{display:grid;gap:6px}
+.exam .eitem p{font-size:14px;margin:0}
 .tag.imp{background:var(--new);color:var(--on-new)}
 .nmore{justify-self:start;margin-top:4px;background:none;border:0;padding:0;color:var(--accent);font-size:13px;font-weight:700}
 .nempty{font-size:13px;color:var(--muted)}
@@ -309,7 +314,7 @@ mark{background:var(--mark);color:inherit;padding:0 2px;border-radius:3px}
   "pin": "80b4f7eb"
  },
  "current": null,
- "updated": "2026-11-07",
+ "updated": "2026-11-20",
  "chapters": [
   {
    "id": "c0",
@@ -2285,7 +2290,30 @@ mark{background:var(--mark);color:inherit;padding:0 2px;border-radius:3px}
    ]
   }
  ],
- "news": [],
+ "news": [
+  {
+   "date": "2026-11-20",
+   "title": "【歴史総合】期末考査の歴史ノート解答を掲載しました",
+   "body": "歴史総合のページの連絡事項の下に、期末考査範囲（歴史ノートp.84〜105）の解答を載せました。答え合わせをして、ノートを仕上げておいてください。\nノートは、期末考査前の最後の授業中に回収します。忘れずに持ってきてください。",
+   "important": true
+  }
+ ],
+ "exam": {
+  "rekishi": [
+   {
+    "title": "期末考査　歴史ノート解答（p.84〜105）",
+    "note": "ノートは期末考査前の最後の授業中に回収します。",
+    "files": [
+     {
+      "name": "解答",
+      "file": "files/rekishi/exam-note-answer.pdf",
+      "fn": "期末考査_歴史ノート解答_p84-105.pdf",
+      "d": "2026-11-20"
+     }
+    ]
+   }
+  ]
+ },
  "geo": {
   "title": "地理総合",
   "chapters": [
@@ -3485,6 +3513,15 @@ function newsView(){
       (n.body?'<div class="nb">'+linkify(n.body)+'</div>':'')+'</div>'}).join('')+
     '</section>';
 }
+function examView(){
+  var list=((state.exam||{})[SUBJ])||[];
+  if(!list.length) return '';
+  return '<section class="exam" aria-label="テスト対策"><h2>テスト対策</h2>'+list.map(function(x){
+    return '<div class="eitem"><div class="nt"><b>'+esc(x.title||'')+'</b></div>'+(x.note?'<p>'+esc(x.note)+'</p>':'')+
+      '<div class="mats">'+(x.files||[]).map(function(f){
+        return '<a class="mat'+(isNewFile(f)?' isnew':'')+'" href="'+esc(f.file)+'" target="_blank" rel="noopener">'+esc(f.name)+'<small>PDF</small></a>'}).join('')+'</div></div>'}).join('')+
+    '</section>';
+}
 function newsEdit(){
   var list=newsSorted();
   return '<label class="lb">連絡事項（新しい日付が上に表示されます）</label><div class="erow"><button class="btn sm" data-act="add-news">＋ 連絡を追加</button></div>'+
@@ -3696,6 +3733,7 @@ function render(){
   if(locked()){document.getElementById('app').innerHTML=gateHtml();var pi=document.getElementById('pin');if(pi)pi.focus();return}
   var h=header();
   if(!edit) h+=newsView();
+  if(!edit) h+=examView();
   if(!edit){var d=nowCard(); if(d) h+='<div class="dash" style="margin-top:14px">'+d+'</div>'}
   if(!edit) h+=subjSwitch();
   if(!edit) h+=(SUBJ==='rekishi'?mxView():SUBJ==='chiri'?gmView():'');
